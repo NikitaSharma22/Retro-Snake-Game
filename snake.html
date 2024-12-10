@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <link rel="stylesheet" href="/sstyle.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="start-screen" class="screen">
+        <h1 id="game-title">Snake Game</h1>
+        <button id="easy-button" onclick="startGame('easy')">Easy</button>
+        <button id="medium-button" onclick="startGame('medium')">Medium</button>
+        <button id="hard-button" onclick="startGame('hard')">Hard</button>
+
+    </div>
+
+    <div id="game-container" class="screen">
+        <canvas id="game-board"></canvas>
+        <div id="scoreboard">Score: <span id="score">0</span></div>
+        <button id="end-button" onclick="endGame()">End Game</button>
+    </div>
+
+    <!-- Popup Modal -->
+    <div id="game-over-modal" class="modal">
+        <div class="modal-content">
+            <h2>Game Over!</h2>
+            <p>Total Score: <span id="final-score">0</span></p>
+            <div class="modal-buttons">
+                <button id="retry-button" onclick="restartGame()">Retry</button>
+                <button id="end-game-button" onclick="endGameFromPopup()">End Game</button>
+            </div>
+        </div>
+    </div>
+    <audio id="chomp-sound" src="chomp.wav" preload="auto"></audio>
+    <audio id="powerup-sound" src="/powerup.wav" preload="auto"></audio>
+    <audio id="bgm" src="bgm.mp3" preload="auto"></audio>
+    <script src="/sscript.js"></script>
+</body>
+</html>
