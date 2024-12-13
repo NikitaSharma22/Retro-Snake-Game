@@ -29,6 +29,7 @@ let isPowerUpAvailable = false; // Flag to control when power-ups can appear
 let snakeSpeed = 250;
 let initialSpeed = 500; // Default speed
 let speedIncrement = 0; // Adjust this value for how much you want to speed up
+let backgroundMusic;
 
 
 canvas.width = canvasSize;
@@ -40,6 +41,8 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowLeft' && direction !== 'RIGHT') direction = 'LEFT';
     if (event.key === 'ArrowRight' && direction !== 'LEFT') direction = 'RIGHT';
 });
+
+
 
 function startGame(difficulty) {
     startScreen.style.display = 'none';
@@ -64,6 +67,7 @@ function startGame(difficulty) {
     direction = 'RIGHT';
     generateFood();
     gameInterval = setInterval(gameLoop, snakeSpeed);
+    backgroundMusic.pause();
 }
 
 
@@ -244,6 +248,7 @@ function endGame() {
     displayTopScores(score, topScores);
 
     modal.style.display = 'flex';
+    backgroundMusic.resume();
 }
 
 function restartGame() {
