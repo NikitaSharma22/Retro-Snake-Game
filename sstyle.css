@@ -20,6 +20,7 @@ body {
     height: 100vh;
     overflow: hidden;
     flex-direction: column;
+    padding: 10px;
 }
 
 .screen {
@@ -113,20 +114,33 @@ canvas {
 
 .modal-content {
     background-color: #1a1a1a;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 30px;
+    border-radius: 15px;
     text-align: center;
     color: #ffff66;
-    border: 2px solid #ff5722;
+    border: 3px solid #ff5722;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .modal h2 {
     color: #ff5722;
     text-shadow: 2px 2px 0px #ff9800, 4px 4px 0px #000000;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.modal .top-scores div {
+    margin: 10px;
+    padding: 15px;
+    border: 2px solid #fff;
+    background: #1a1a1a;
+    font-size: 1.2rem;
+    color: #ffff66;
+    text-shadow: 2px 2px 0px #000;
 }
 
 .modal .modal-buttons {
-    margin-top: 20px;
+    margin-top: 30px;
 }
 
 .modal button {
@@ -135,10 +149,14 @@ canvas {
     margin: 10px;
     font-family: 'Press Start 2P', cursive;
     font-size: 1.2rem;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: 2px solid #fff;
 }
 
 .modal button:hover {
     background-color: #e64a19;
+    transform: scale(1.05);
 }
 
 #game-board {
@@ -153,8 +171,16 @@ canvas {
     justify-content: center;
     align-items: center;
     font-family: 'Press Start 2P', cursive;
-    font-size: 1.2rem;
+    font-size: 2.2rem;
     color: #ffff66;
     margin-bottom: 10px;
     text-shadow: 2px 2px 0px #000;
 }
+
+.modal p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #8af72a;
+    margin-bottom: 20px;
+}
+

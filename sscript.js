@@ -29,8 +29,15 @@ let isPowerUpAvailable = false; // Flag to control when power-ups can appear
 let snakeSpeed = 250;
 let initialSpeed = 500; // Default speed
 let speedIncrement = 0; // Adjust this value for how much you want to speed up
-let backgroundMusic;
+let isGameActive = false;
+let isGameOver = false; // Track game over state
+const backgroundMusic = new Audio('bgm.mp3');
 
+// Create an audio object for the collision sound
+const collisionSound = new Audio('hitwall.wav');
+
+// Get the audio element for collision sound
+const hitSound = document.getElementById('hitSound');
 
 canvas.width = canvasSize;
 canvas.height = canvasSize;
@@ -42,9 +49,18 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowRight' && direction !== 'LEFT') direction = 'RIGHT';
 });
 
-
+function updateMusicPlayback() {
+    if (isGameActive) {
+        backgroundMusic.pause();
+    } else {
+        backgroundMusic.play();
+    }
+}
 
 function startGame(difficulty) {
+    console.log("Starting game with difficulty:", difficulty);
+    isGameActive = true;
+    updateMusicPlayback();
     startScreen.style.display = 'none';
     gameContainer.style.display = 'block';
 
@@ -67,11 +83,10 @@ function startGame(difficulty) {
     direction = 'RIGHT';
     generateFood();
     gameInterval = setInterval(gameLoop, snakeSpeed);
-    backgroundMusic.pause();
 }
 
-
 function gameLoop() {
+    console.log("Game loop running");
     const head = { ...snake[0] };
 
     if (direction === 'UP') head.y -= gridSize;
@@ -80,7 +95,9 @@ function gameLoop() {
     if (direction === 'RIGHT') head.x += gridSize;
 
     // Collision with walls or self
-    if (head.x < 0 || head.x >= canvasSize || head.y < 0 || head.y >= canvasSize || snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+    if (head.x < 0 || head.x >= canvasSize || head.y < 0 || head.y >= canvasSize || 
+        snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+        handleCollision(); // Add collision sound
         endGame();
         return;
     }
@@ -125,6 +142,7 @@ function gameLoop() {
     onFoodEaten();
     onPowerUpAppear();
 
+    checkCollisions();
 }
 
 function drawPowerUps() {
@@ -135,19 +153,18 @@ function drawPowerUps() {
     }
 
     if (slowDownPowerUp) {
-        context.fillStyle = "blue";
-        context.beginPath();
-        context.arc(
+        ctx.fillStyle = "blue";
+        ctx.beginPath();
+        ctx.arc(
             slowDownPowerUp.x + gridSize / 2,
             slowDownPowerUp.y + gridSize / 2,
             gridSize / 2,
             0,
             2 * Math.PI
         );
-        context.fill();
+        ctx.fill();
     }
 }
-
 
 function increaseSpeed() {
     if (speedIncrement > 0) {
@@ -239,6 +256,8 @@ function displayTopScores(currentScore, topScores) {
 }
 
 function endGame() {
+    isGameActive = false;
+    updateMusicPlayback();
     clearInterval(gameInterval);
 
     // Save current score and get updated top scores
@@ -248,12 +267,15 @@ function endGame() {
     displayTopScores(score, topScores);
 
     modal.style.display = 'flex';
-    backgroundMusic.resume();
 }
 
 function restartGame() {
+    isGameActive = true;
+    isGameOver = false;
+    backgroundMusic.play(); // Resume background music
     modal.style.display = 'none';
-    startGame();
+    startScreen.style.display = 'flex';
+    gameContainer.style.display = 'none';
 }
 
 function endGameFromPopup() {
@@ -355,4 +377,65 @@ function onPowerUpAppear() {
         });
     }
 }
+
+updateMusicPlayback();
+
+// Ensure the audio file is loaded and ready
+hitSound.addEventListener('canplaythrough', () => {
+    console.log("Hit sound is ready to play.");
+}, false);
+
+hitSound.addEventListener('error', (e) => {
+    console.error("Error loading hit sound:", e);
+});
+
+// Function to handle collision
+function handleCollision() {
+    if (hitSound) {
+        // Pause the background music
+        backgroundMusic.pause();
+
+        // Play the collision sound
+        hitSound.currentTime = 0; // Reset the sound to start
+        hitSound.play().then(() => {
+            // Do not resume background music after collision sound ends
+            // during game over
+        }).catch(error => {
+            console.error("Audio playback failed:", error);
+        });
+    }
+}
+
+// Function to handle game over
+function gameOver() {
+    isGameActive = false;
+    isGameOver = true; // Set game over state
+    backgroundMusic.pause(); // Ensure background music is paused
+    // ... other game over logic ...
+}
+
+// Example collision detection logic
+function checkCollision() {
+    // Replace this with your actual collision detection logic
+    const collisionDetected = false; // Example placeholder
+
+    if (collisionDetected) {
+        handleCollision();
+        gameOver(); // Call game over logic
+    }
+}
+
+document.getElementById('easy-button')?.addEventListener('click', () => startGame('easy'));
+document.getElementById('medium-button')?.addEventListener('click', () => startGame('medium'));
+document.getElementById('hard-button')?.addEventListener('click', () => startGame('hard'));
+
+// Start the game loop with a user interaction
+document.addEventListener('DOMContentLoaded', () => {
+    document.body.addEventListener('click', () => {
+        if (!isGameActive && !isGameOver) {
+            // Start the game loop or game logic
+            gameLoop();
+        }
+    });
+});
 
